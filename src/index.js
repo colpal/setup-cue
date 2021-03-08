@@ -2,9 +2,16 @@ const os = require('os');
 const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
 
-const capitalize = (s) => s.charAt(0).toUpperCase() + s.substring(1);
-
-const getPlatform = () => capitalize(os.platform());
+const getPlatform = () => {
+  switch (os.platform()) {
+    case 'linux': return 'Linux';
+    case 'darwin': return 'Darwin';
+    case 'win32': return 'Windows';
+    default:
+      core.setFailed('Unsupported Platform');
+      return process.exit();
+  }
+};
 
 const getArchitecture = () => {
   switch (os.arch()) {

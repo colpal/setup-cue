@@ -1,0 +1,10 @@
+---
+name: Setup CUE
+description: Initialize the CUE language binary within your GitHub Actions runner
+inputs:
+  cue-version:
+    description: Version of CUE binary to install
+    required: true
+runs:
+  using: node12
+  main: dist/main.js

@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "webpack"
+  },
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/tool-cache": "^1.6.1"

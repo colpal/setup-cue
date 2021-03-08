@@ -49,4 +49,4 @@ const extract = (archive) => {
   const folder = await extract(archive);
   const cache = await tc.cacheDir(folder, 'cue', version);
   core.addPath(cache);
-})();
+})().catch(core.setFailed);

@@ -1,0 +1,19 @@
+---
+'on':
+  push:
+    paths:
+      - .github/workflows/main.yaml
+      - dist/main.js
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run colpal/setup-cue@${{ github.ref }}
+        uses: ./
+        with:
+          cue-version: 0.3.0-beta.5
+
+      - run: cue version

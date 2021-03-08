@@ -15,8 +15,7 @@ const getPlatform = () => {
 
 const getArchitecture = () => {
   switch (os.arch()) {
-    case 'x64':
-      return 'x86_64';
+    case 'x64': return 'x86_64';
     default:
       core.setFailed('Unsupported Architecture');
       return process.exit();
@@ -25,10 +24,8 @@ const getArchitecture = () => {
 
 const getArchiveExtension = () => {
   switch (os.platform()) {
-    case 'win32':
-      return 'zip';
-    default:
-      return 'tar.gz';
+    case 'win32': return 'zip';
+    default: return 'tar.gz';
   }
 };
 
@@ -41,10 +38,8 @@ const getURL = (version) => {
 
 const extract = (archive) => {
   switch (getArchiveExtension()) {
-    case 'zip':
-      return tc.extractZip(archive);
-    default:
-      return tc.extractTar(archive);
+    case 'zip': return tc.extractZip(archive);
+    default: return tc.extractTar(archive);
   }
 };
 

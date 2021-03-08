@@ -25,7 +25,7 @@ const getArchitecture = () => {
 
 const getArchiveExtension = () => {
   switch (os.platform()) {
-    case 'windows':
+    case 'win32':
       return 'zip';
     default:
       return 'tar.gz';

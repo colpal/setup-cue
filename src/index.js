@@ -51,11 +51,21 @@ const extract = (archive) => {
   }
 };
 
-(async () => {
-  const version = core.getInput('cue-version', { required: true });
+const cache = (fn) => async (version) => {
+  const cached = tc.find('cue', version);
+  if (cached !== '') return cached;
+  const folder = await fn(version);
+  return tc.cacheDir(folder, 'cue', version);
+};
+
+const getTool = cache(async (version) => {
   const url = getURL(version);
   const archive = await tc.downloadTool(url);
-  const folder = await extract(archive);
-  const cache = await tc.cacheDir(folder, 'cue', version);
-  core.addPath(cache);
+  return extract(archive);
+});
+
+(async () => {
+  const version = core.getInput('cue-version', { required: true });
+  const tool = getTool(version);
+  core.addPath(tool);
 })().catch(core.setFailed);

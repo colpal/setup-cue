@@ -1,4 +1,5 @@
 {
+  "name": "setup-cue",
   "scripts": {
     "build": "webpack",
     "prepare": "husky install"

@@ -44,7 +44,10 @@ const getURL = (version) => {
 const extract = (archive) => {
   switch (getArchiveExtension()) {
     case 'zip': return tc.extractZip(archive);
-    default: return tc.extractTar(archive);
+    case 'tar.gz': return tc.extractTar(archive);
+    default:
+      core.setFailed('Unsupported Archive Type');
+      return process.exit();
   }
 };
 

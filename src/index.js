@@ -66,6 +66,6 @@ const getTool = cache(async (version) => {
 
 (async () => {
   const version = core.getInput('cue-version', { required: true });
-  const tool = getTool(version);
+  const tool = await getTool(version);
   core.addPath(tool);
 })().catch(core.setFailed);

@@ -54,7 +54,6 @@ const extract = (archive) => {
 (async () => {
   const version = core.getInput('cue-version', { required: true });
   const url = getURL(version);
-  core.info(`Downloading "${url}"`);
   const archive = await tc.downloadTool(url);
   const folder = await extract(archive);
   const cache = await tc.cacheDir(folder, 'cue', version);

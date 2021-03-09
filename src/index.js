@@ -25,7 +25,12 @@ const getArchitecture = () => {
 const getArchiveExtension = () => {
   switch (os.platform()) {
     case 'win32': return 'zip';
-    default: return 'tar.gz';
+    case 'linux':
+    case 'darwin':
+      return 'tar.gz';
+    default:
+      core.setFailed('Unsupported Platform');
+      return process.exit();
   }
 };
 

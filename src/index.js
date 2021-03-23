@@ -1,15 +1,28 @@
 const os = require('os');
 const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
+const semver = require('semver');
 
-const getPlatform = () => {
-  switch (os.platform()) {
-    case 'linux': return 'Linux';
-    case 'darwin': return 'Darwin';
-    case 'win32': return 'Windows';
-    default:
-      core.setFailed('Unsupported Platform');
-      return process.exit();
+const getPlatform = (version) => {
+  const platform = os.platform();
+  if (semver.lte(version, '0.3.0-beta.5')) {
+    switch (platform) {
+      case 'linux': return 'Linux';
+      case 'darwin': return 'Darwin';
+      case 'win32': return 'Windows';
+      default:
+        core.setFailed('Unsupported Platform');
+        return process.exit();
+    }
+  } else {
+    switch (platform) {
+      case 'linux': return 'linux';
+      case 'darwin': return 'darwin';
+      case 'win32': return 'windows';
+      default:
+        core.setFailed('Unsupported Platform');
+        return process.exit();
+    }
   }
 };
 
@@ -35,7 +48,7 @@ const getArchiveExtension = () => {
 };
 
 const getURL = (version) => {
-  const platform = getPlatform();
+  const platform = getPlatform(version);
   const arch = getArchitecture();
   const extension = getArchiveExtension();
   return `https://github.com/cuelang/cue/releases/download/v${version}/cue_${version}_${platform}_${arch}.${extension}`;

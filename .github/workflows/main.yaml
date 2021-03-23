@@ -9,6 +9,9 @@ jobs:
   main:
     strategy:
       matrix:
+        cue-version:
+          - 0.3.0-beta.5
+          - 0.3.0-beta.7
         os:
           - windows-latest
           - ubuntu-latest
@@ -21,6 +24,6 @@ jobs:
       - name: Run colpal/setup-cue@${{ github.ref }}
         uses: ./
         with:
-          cue-version: 0.3.0-beta.5
+          cue-version: ${{ matrix.cue-version }}
 
       - run: cue version

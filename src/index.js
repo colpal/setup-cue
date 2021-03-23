@@ -61,7 +61,8 @@ const getURL = (version) => {
   const platform = getPlatform(version);
   const arch = getArchitecture(version);
   const extension = getArchiveExtension();
-  return `https://github.com/cuelang/cue/releases/download/v${version}/cue_${version}_${platform}_${arch}.${extension}`;
+  const prefix = semver.lte(version, '0.3.0-beta.5') ? '' : 'v';
+  return `https://github.com/cuelang/cue/releases/download/v${version}/cue_${prefix}${version}_${platform}_${arch}.${extension}`;
 };
 
 const extract = (archive) => {

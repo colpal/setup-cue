@@ -26,12 +26,22 @@ const getPlatform = (version) => {
   }
 };
 
-const getArchitecture = () => {
-  switch (os.arch()) {
-    case 'x64': return 'x86_64';
-    default:
-      core.setFailed('Unsupported Architecture');
-      return process.exit();
+const getArchitecture = (version) => {
+  const arch = os.arch();
+  if (semver.lte(version, '0.3.0-beta.5')) {
+    switch (arch) {
+      case 'x64': return 'x86_64';
+      default:
+        core.setFailed('Unsupported Architecture');
+        return process.exit();
+    }
+  } else {
+    switch (arch) {
+      case 'x64': return 'amd64';
+      default:
+        core.setFailed('Unsupported Architecture');
+        return process.exit();
+    }
   }
 };
 
@@ -49,7 +59,7 @@ const getArchiveExtension = () => {
 
 const getURL = (version) => {
   const platform = getPlatform(version);
-  const arch = getArchitecture();
+  const arch = getArchitecture(version);
   const extension = getArchiveExtension();
   return `https://github.com/cuelang/cue/releases/download/v${version}/cue_${version}_${platform}_${arch}.${extension}`;
 };

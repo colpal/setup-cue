@@ -30,4 +30,6 @@ jobs:
         with:
           cue-version: ${{ matrix.cue-version }}
 
-      - run: cue version
+      - run: cue version | grep -qF "$CUE_VERSION"
+        env:
+          CUE_VERSION: ${{ matrix.cue-version }}

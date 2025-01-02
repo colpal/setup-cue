@@ -51,7 +51,7 @@ const extract = (archive) => {
   switch (getArchiveExtension()) {
     case 'zip': return tc.extractZip(archive);
     case 'tar.gz': return tc.extractTar(archive);
-    default: fail('Unsupported Archive Type');
+    default: return fail('Unsupported Archive Type');
   }
 };
 

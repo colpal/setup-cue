@@ -15,18 +15,14 @@ const getPlatform = (version) => {
       case 'linux': return 'Linux';
       case 'darwin': return 'Darwin';
       case 'win32': return 'Windows';
-      default:
-        core.setFailed('Unsupported Platform');
-        return process.exit();
+      default: fail('Unsupported Platform');
     }
   } else {
     switch (platform) {
       case 'linux': return 'linux';
       case 'darwin': return 'darwin';
       case 'win32': return 'windows';
-      default:
-        core.setFailed('Unsupported Platform');
-        return process.exit();
+      default: fail('Unsupported Platform');
     }
   }
 };
@@ -37,17 +33,13 @@ const getArchitecture = (version) => {
     switch (arch) {
       case 'x64': return 'x86_64';
       case 'arm64': return 'arm64';
-      default:
-        core.setFailed('Unsupported Architecture');
-        return process.exit();
+      default: fail('Unsupported Architecture');
     }
   } else {
     switch (arch) {
       case 'x64': return 'amd64';
       case 'arm64': return 'arm64';
-      default:
-        core.setFailed('Unsupported Architecture');
-        return process.exit();
+      default: fail('Unsupported Architecture');
     }
   }
 };
@@ -58,9 +50,7 @@ const getArchiveExtension = () => {
     case 'linux':
     case 'darwin':
       return 'tar.gz';
-    default:
-      core.setFailed('Unsupported Platform');
-      return process.exit();
+    default: fail('Unsupported Platform');
   }
 };
 
@@ -76,9 +66,7 @@ const extract = (archive) => {
   switch (getArchiveExtension()) {
     case 'zip': return tc.extractZip(archive);
     case 'tar.gz': return tc.extractTar(archive);
-    default:
-      core.setFailed('Unsupported Archive Type');
-      return process.exit();
+    default: fail('Unsupported Archive Type');
   }
 };
 

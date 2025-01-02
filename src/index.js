@@ -8,55 +8,67 @@ const fail = (message) => {
   process.exit();
 };
 
-const getPlatform = (version) => {
-  const platform = os.platform();
-  if (semver.lte(version, '0.3.0-beta.5')) {
-    switch (platform) {
-      case 'linux': return 'Linux';
-      case 'darwin': return 'Darwin';
-      case 'win32': return 'Windows';
-      default: fail('Unsupported Platform');
-    }
-  } else {
-    switch (platform) {
-      case 'linux': return 'linux';
-      case 'darwin': return 'darwin';
-      case 'win32': return 'windows';
-      default: fail('Unsupported Platform');
-    }
-  }
-};
-
-const getArchitecture = (version) => {
-  const arch = os.arch();
-  if (semver.lte(version, '0.3.0-beta.5')) {
-    switch (arch) {
-      case 'x64': return 'x86_64';
-      case 'arm64': return 'arm64';
-      default: fail('Unsupported Architecture');
-    }
-  } else {
-    switch (arch) {
-      case 'x64': return 'amd64';
-      case 'arm64': return 'arm64';
-      default: fail('Unsupported Architecture');
-    }
-  }
-};
-
 const getArchiveExtension = () => {
   switch (os.platform()) {
     case 'win32': return 'zip';
     case 'linux':
     case 'darwin':
       return 'tar.gz';
-    default: fail('Unsupported Platform');
+    default: return fail('Unsupported Platform');
+  }
+};
+
+const getSystem = (version) => {
+  const arch = os.arch();
+  const platform = os.platform();
+
+  if (semver.lt(version, '0.3.0-beta.6')) {
+    switch (arch) {
+      case 'x64':
+        switch (platform) {
+          case 'linux': return ['Linux', 'x86_64'];
+          case 'darwin': return ['Darwin', 'x86_64'];
+          case 'win32': return ['Windows', 'x86_64'];
+          default: return fail('Unsupported Platform');
+        }
+      case 'arm64':
+        switch (platform) {
+          case 'linux': return ['Linux', 'arm64'];
+          default: return fail('arm64 not supported on macOS/Windows before v0.4.1-beta.6');
+        }
+      default: return fail('Unsupported Architecture');
+    }
+  } else if (semver.lt(version, '0.4.1-beta.6')) {
+    switch (arch) {
+      case 'x64':
+        switch (platform) {
+          case 'linux': return ['linux', 'amd64'];
+          case 'win32': return ['windows', 'amd64'];
+          case 'darwin': return ['darwin', 'amd64'];
+          default: return fail('Unsupported Platform');
+        }
+      case 'arm64':
+        switch (platform) {
+          case 'linux': return ['linux', 'arm64'];
+          default: return fail('arm64 not supported on macOS/Windows before v0.4.1-beta.6');
+        }
+      default: return fail('Unsupported Architecture');
+    }
+  } else {
+    const validPlatforms = new Set(['linux', 'windows', 'darwin']);
+    const p = (platform === 'win32') ? 'windows' : platform;
+    if (!validPlatforms.has(p)) return fail('Unsupported Platform');
+
+    const validArchitectures = new Set(['amd64', 'arm64']);
+    const a = (arch === 'x64') ? 'amd64' : arch;
+    if (!validArchitectures.has(a)) return fail('Unsupported Architecture');
+
+    return [p, a];
   }
 };
 
 const getURL = (version) => {
-  const platform = getPlatform(version);
-  const arch = getArchitecture(version);
+  const [platform, arch] = getSystem(version);
   const extension = getArchiveExtension();
   const prefix = semver.lte(version, '0.3.0-beta.5') ? '' : 'v';
   return `https://github.com/cue-lang/cue/releases/download/v${version}/cue_${prefix}${version}_${platform}_${arch}.${extension}`;

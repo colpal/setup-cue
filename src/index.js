@@ -21,52 +21,23 @@ const getArchiveExtension = () => {
 };
 
 const getSystem = (version) => {
-  const arch = os.arch();
-  const platform = os.platform();
+  const p = os.platform();
+  const a = os.arch();
+
+  const validPlatforms = new Set(['linux', 'win32', 'darwin']);
+  if (!validPlatforms.has(a)) return fail('Unsupported Platform');
+
+  const validArchitectures = new Set(['x64', 'arm64']);
+  if (!validArchitectures.has(a)) return fail('Unsupported Architecture');
+
+  if (semver.lt(version, '0.4.1-beta.6') && a === 'arm64' && p !== 'linux') {
+    return fail('arm64 not supported on macOS/Windows before v0.4.1-beta.6');
+  }
 
   if (semver.lt(version, '0.3.0-beta.6')) {
-    switch (arch) {
-      case 'x64':
-        switch (platform) {
-          case 'linux': return ['Linux', 'x86_64'];
-          case 'darwin': return ['Darwin', 'x86_64'];
-          case 'win32': return ['Windows', 'x86_64'];
-          default: return fail('Unsupported Platform');
-        }
-      case 'arm64':
-        switch (platform) {
-          case 'linux': return ['Linux', 'arm64'];
-          default: return fail('arm64 not supported on macOS/Windows before v0.4.1-beta.6');
-        }
-      default: return fail('Unsupported Architecture');
-    }
-  } else if (semver.lt(version, '0.4.1-beta.6')) {
-    switch (arch) {
-      case 'x64':
-        switch (platform) {
-          case 'linux': return ['linux', 'amd64'];
-          case 'win32': return ['windows', 'amd64'];
-          case 'darwin': return ['darwin', 'amd64'];
-          default: return fail('Unsupported Platform');
-        }
-      case 'arm64':
-        switch (platform) {
-          case 'linux': return ['linux', 'arm64'];
-          default: return fail('arm64 not supported on macOS/Windows before v0.4.1-beta.6');
-        }
-      default: return fail('Unsupported Architecture');
-    }
-  } else {
-    const validPlatforms = new Set(['linux', 'windows', 'darwin']);
-    const p = (platform === 'win32') ? 'windows' : platform;
-    if (!validPlatforms.has(p)) return fail('Unsupported Platform');
-
-    const validArchitectures = new Set(['amd64', 'arm64']);
-    const a = (arch === 'x64') ? 'amd64' : arch;
-    if (!validArchitectures.has(a)) return fail('Unsupported Architecture');
-
-    return [p, a];
+    return [capitalize(p), a === 'x64' ? 'x86_64' : a];
   }
+  return [p, a === 'x64' ? 'amd64' : a];
 };
 
 const getURL = (version) => {

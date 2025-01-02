@@ -3,46 +3,11 @@ const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
 const semver = require('semver');
 
-const getPlatform = (version) => {
-  const platform = os.platform();
-  if (semver.lte(version, '0.3.0-beta.5')) {
-    switch (platform) {
-      case 'linux': return 'Linux';
-      case 'darwin': return 'Darwin';
-      case 'win32': return 'Windows';
-      default:
-        core.setFailed('Unsupported Platform');
-        return process.exit();
-    }
-  } else {
-    switch (platform) {
-      case 'linux': return 'linux';
-      case 'darwin': return 'darwin';
-      case 'win32': return 'windows';
-      default:
-        core.setFailed('Unsupported Platform');
-        return process.exit();
-    }
-  }
-};
+const capitalize = (s) => s.at(0).toUpperCase() + s.slice(1);
 
-const getArchitecture = (version) => {
-  const arch = os.arch();
-  if (semver.lte(version, '0.3.0-beta.5')) {
-    switch (arch) {
-      case 'x64': return 'x86_64';
-      default:
-        core.setFailed('Unsupported Architecture');
-        return process.exit();
-    }
-  } else {
-    switch (arch) {
-      case 'x64': return 'amd64';
-      default:
-        core.setFailed('Unsupported Architecture');
-        return process.exit();
-    }
-  }
+const fail = (message) => {
+  core.setFailed(message);
+  process.exit();
 };
 
 const getArchiveExtension = () => {
@@ -51,15 +16,33 @@ const getArchiveExtension = () => {
     case 'linux':
     case 'darwin':
       return 'tar.gz';
-    default:
-      core.setFailed('Unsupported Platform');
-      return process.exit();
+    default: return fail('Unsupported Platform');
   }
 };
 
+const getSystem = (version) => {
+  let p = os.platform();
+  const validPlatforms = new Set(['linux', 'win32', 'darwin']);
+  if (!validPlatforms.has(p)) return fail('Unsupported Platform');
+
+  const a = os.arch();
+  const validArchitectures = new Set(['x64', 'arm64']);
+  if (!validArchitectures.has(a)) return fail('Unsupported Architecture');
+
+  if (semver.lt(version, '0.4.1-beta.6') && a === 'arm64' && p !== 'linux') {
+    return fail('arm64 not supported on macOS/Windows before v0.4.1-beta.6');
+  }
+
+  p = p === 'win32' ? 'windows' : p;
+
+  if (semver.lt(version, '0.3.0-beta.6')) {
+    return [capitalize(p), a === 'x64' ? 'x86_64' : a];
+  }
+  return [p, a === 'x64' ? 'amd64' : a];
+};
+
 const getURL = (version) => {
-  const platform = getPlatform(version);
-  const arch = getArchitecture(version);
+  const [platform, arch] = getSystem(version);
   const extension = getArchiveExtension();
   const prefix = semver.lte(version, '0.3.0-beta.5') ? '' : 'v';
   return `https://github.com/cue-lang/cue/releases/download/v${version}/cue_${prefix}${version}_${platform}_${arch}.${extension}`;
@@ -69,9 +52,7 @@ const extract = (archive) => {
   switch (getArchiveExtension()) {
     case 'zip': return tc.extractZip(archive);
     case 'tar.gz': return tc.extractTar(archive);
-    default:
-      core.setFailed('Unsupported Archive Type');
-      return process.exit();
+    default: return fail('Unsupported Archive Type');
   }
 };
 

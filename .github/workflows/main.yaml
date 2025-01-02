@@ -34,6 +34,16 @@ jobs:
           - macos-13
           - macos-14
           - macos-15
+        exclude:
+          - { cue-version: 0.3.2, os: macos-15 }
+          - { cue-version: 0.3.2, os: macos-14 }
+          - { cue-version: 0.2.2, os: macos-15 }
+          - { cue-version: 0.2.2, os: macos-14 }
+          - { cue-version: 0.1.2, os: macos-15 }
+          - { cue-version: 0.1.2, os: macos-14 }
+          - { cue-version: 0.0.15, os: macos-15 }
+          - { cue-version: 0.0.15, os: macos-14 }
+
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4

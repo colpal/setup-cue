@@ -3,6 +3,11 @@ const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
 const semver = require('semver');
 
+const fail = (message) => {
+  core.setFailed(message);
+  process.exit();
+};
+
 const getPlatform = (version) => {
   const platform = os.platform();
   if (semver.lte(version, '0.3.0-beta.5')) {

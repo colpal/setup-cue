@@ -21,7 +21,7 @@ const getArchiveExtension = () => {
 };
 
 const getSystem = (version) => {
-  const p = os.platform();
+  let p = os.platform();
   const validPlatforms = new Set(['linux', 'win32', 'darwin']);
   if (!validPlatforms.has(p)) return fail('Unsupported Platform');
 
@@ -32,6 +32,8 @@ const getSystem = (version) => {
   if (semver.lt(version, '0.4.1-beta.6') && a === 'arm64' && p !== 'linux') {
     return fail('arm64 not supported on macOS/Windows before v0.4.1-beta.6');
   }
+
+  p = p === 'win32' ? 'windows' : p;
 
   if (semver.lt(version, '0.3.0-beta.6')) {
     return [capitalize(p), a === 'x64' ? 'x86_64' : a];

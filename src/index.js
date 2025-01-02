@@ -22,11 +22,10 @@ const getArchiveExtension = () => {
 
 const getSystem = (version) => {
   const p = os.platform();
-  const a = os.arch();
-
   const validPlatforms = new Set(['linux', 'win32', 'darwin']);
   if (!validPlatforms.has(p)) return fail('Unsupported Platform');
 
+  const a = os.arch();
   const validArchitectures = new Set(['x64', 'arm64']);
   if (!validArchitectures.has(a)) return fail('Unsupported Architecture');
 

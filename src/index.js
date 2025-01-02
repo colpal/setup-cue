@@ -25,7 +25,7 @@ const getSystem = (version) => {
   const a = os.arch();
 
   const validPlatforms = new Set(['linux', 'win32', 'darwin']);
-  if (!validPlatforms.has(a)) return fail('Unsupported Platform');
+  if (!validPlatforms.has(p)) return fail('Unsupported Platform');
 
   const validArchitectures = new Set(['x64', 'arm64']);
   if (!validArchitectures.has(a)) return fail('Unsupported Architecture');

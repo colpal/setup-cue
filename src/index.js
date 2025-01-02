@@ -3,6 +3,10 @@ const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
 const semver = require('semver');
 
+const capitalize = (s) => {
+  return s.at(0).toUpperCase() + s.slice(1);
+};
+
 const fail = (message) => {
   core.setFailed(message);
   process.exit();

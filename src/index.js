@@ -31,6 +31,7 @@ const getArchitecture = (version) => {
   if (semver.lte(version, '0.3.0-beta.5')) {
     switch (arch) {
       case 'x64': return 'x86_64';
+      case 'arm64': return 'arm64';
       default:
         core.setFailed('Unsupported Architecture');
         return process.exit();
@@ -38,6 +39,7 @@ const getArchitecture = (version) => {
   } else {
     switch (arch) {
       case 'x64': return 'amd64';
+      case 'arm64': return 'arm64';
       default:
         core.setFailed('Unsupported Architecture');
         return process.exit();

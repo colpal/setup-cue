@@ -1,3 +1,7 @@
+# DEPRECATED
+
+## Use [cue-lang/setup-cue](https://github.com/cue-lang/setup-cue) instead
+
 # Setup CUE
 
 Initialize the CUE language binary within your GitHub Actions runner
